@@ -3,5 +3,7 @@ def criar_usuario():
 def lista_usuario():
     print('Listar de usuarios')
 def  buscar_usuario():
-    print('Busca pelo usuario')
+    print('Buscar pelo usuario')
+def deletar_usuario():
+    print('Deletar usuario')    
 
