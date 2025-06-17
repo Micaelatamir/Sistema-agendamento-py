@@ -1,3 +1,6 @@
+import usuario
+import agendamento
+
 print('Menu')
 print('Escolhe a função que deseja: ')
 print('(1)Criar usuario')
