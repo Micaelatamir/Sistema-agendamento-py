@@ -6,29 +6,45 @@ print('Escolhe a função que deseja: ')
 print('(1) Criar usuário')
 print('(2) Agendar compromisso')
 print('(3) Sair do sistema')
-opcao = input('Escolha uma opção:')
+opcao = input('opção selecionada')
 
 if opcao == "1":
-  print(' Menu usuário: ')
-  print('(1) Criar usuário')
-  print('(2) Listar usuário')
-  print('(3) Buscar usuário')
-  print('(4) deletar usuário')
-  usuario = input(' Escolha uma opção')
+ print(' Menu usuário:')
+ print('(1) Criar usuário')
+ print('(2) Listar usuário')
+ print('(3) Buscar usuário')
+ print('(4) deletar usuário')
+escolha_usuario = input(' Escolha uma opção')
 
-if usuario == "1" :
-  criar_usuario = input()
-elif usuario == "2" :
-  listar_usuario = input()
-elif usuario == "3" :
-  escolha = input( )
-elif usuario == "4" :
-  deletar_usuario = input()  
+if escolha_usuario == "1" :
+ usuario.criar_usuario ()
+elif escolha_usuario == "2" :
+  usuario.lista_usuario ()
+elif escolha_usuario == "3" :
+  usuario.escolha ()
+elif escolha_usuario == "4" :
+  usuario.deletar_usuario ()  
+
+
 elif opcao == "2" :
- agendar = input('Agendar compromisso: ')
+ print('Menu de agendamento')
+ print('(1) Criar agendamento')
+ print('(2) Listar agendamento')
+ print('(3) Canecelar agendamento')
+escolha_agendamento =input('escolha uma opção: ')
+
+if escolha_agendamento == "1" :
+  agendamento.criar_agendamento()
+elif escolha_agendamento == "2" :
+  agendamento.listar_agendamento()  
+elif escolha_agendamento == "3" :
+  agendamento.cancelar_agendamento()  
+
+
 elif opcao == "3" :
   encerramento = input(' Sair do sistema')
   print('Até mais!')
+
 else:
  print('Erro')
 
