@@ -20,40 +20,44 @@ while True :
     escolha_usuario = input(' Escolha uma opção')
 
     if escolha_usuario == "1" :
-      usuario.criar_usuario ()
+          usuario.criar_usuario ()
     elif escolha_usuario == "2" :
-      usuario.lista_usuario ()
+          usuario.lista_usuario ()
     elif escolha_usuario == "3" :
-      usuario.buscar_usuario()
+          usuario.buscar_usuario()
     elif escolha_usuario == "4" :
-      usuario.deletar_usuario () 
-    
+          usuario.deletar_usuario () 
+    else :
+          print('Opção invalida')
+      
 
   elif opcao == "2" :
-   print('Menu de agendamento')
-   print('(1) Criar agendamento')
-   print('(2) Listar agendamento')
-   print('(3) Cancelar agendamento')
-   escolha_agendamento =input('escolha uma opção: ')
-
-
-   if escolha_agendamento == "1" :
-    agendamento.criar_agendamento()
-   elif escolha_agendamento == "2" :
-    agendamento.listar_agendamento()  
-   elif escolha_agendamento == "3" :
-    agendamento.cancelar_agendamento()  
-   else:
-    print("Opção inválida no menu de agendamento!")
-  
+      print('Menu de agendamento')
+      print('(1) Criar agendamento')
+      print('(2) Listar agendamento')
+      print('(3) Cancelar agendamento')
+      escolha_agendamento =input('escolha uma opção: ')
     
 
+
+      if escolha_agendamento == "1" :
+        agendamento.criar_agendamento()
+      elif escolha_agendamento == "2" :
+        agendamento.listar_agendamento()  
+      elif escolha_agendamento == "3" :
+        agendamento.cancelar_agendamento()  
+      else:
+        print("Opção inválida no menu de agendamento!")   
+ 
   elif opcao == "3" :
-    print('Até mais!')
-    break
+     print('Até mais!')
+     break
   
   else:
     print('ERRO')
+
+
+
   
 
      
