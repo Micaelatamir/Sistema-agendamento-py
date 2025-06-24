@@ -13,8 +13,8 @@ def criar_usuario() :
 
 def lista_usuario():
    print('Lista de usuarios')
-for usuario in usuarios :
-    print(f'{usuario['nome']}, nascido em {usuario['data_nasc']}')
+   for usuario in usuarios :
+     print(f'{usuario['nome']}, nascido em {usuario['data_nasc']}')
 
 def  buscar_usuario():
  buscar = input(' Digite o nome de usuario que deseja encontrar: ')  
@@ -29,6 +29,6 @@ def deletar_usuario():
  for usuario in usuarios:
    if usuario == deletar_usuario:
     usuarios.remove(usuario)   
-   print(f' usuario{deletar_usuario} com sucesso!')
+    print(f' usuario{deletar_usuario} com sucesso!')
    return
- print('usuario inexistente')
+print('usuario inexistente')
