@@ -43,15 +43,21 @@ while True :
     agendamento.listar_agendamento()  
    elif escolha_agendamento == "3" :
     agendamento.cancelar_agendamento()  
+
+  
     
 
-
-   elif opcao == "3" :
+  elif opcao == "3" :
     print('Até mais!')
- 
-  break
+    break
+  
+  else:
+    print('ERRO')
+  
 
-else:
-  print('erro')
+     
+ 
+
+
 
   
