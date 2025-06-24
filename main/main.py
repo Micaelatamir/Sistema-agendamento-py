@@ -24,7 +24,7 @@ while True :
     elif escolha_usuario == "2" :
       usuario.lista_usuario ()
     elif escolha_usuario == "3" :
-      usuario.escolha ()
+      usuario.buscar_usuario()
     elif escolha_usuario == "4" :
       usuario.deletar_usuario () 
     
@@ -43,7 +43,8 @@ while True :
     agendamento.listar_agendamento()  
    elif escolha_agendamento == "3" :
     agendamento.cancelar_agendamento()  
-
+   else:
+    print("Opção inválida no menu de agendamento!")
   
     
 
