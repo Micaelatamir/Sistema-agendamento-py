@@ -36,21 +36,22 @@ while True :
    print('(3) Cancelar agendamento')
    escolha_agendamento =input('escolha uma opção: ')
 
+
    if escolha_agendamento == "1" :
     agendamento.criar_agendamento()
    elif escolha_agendamento == "2" :
     agendamento.listar_agendamento()  
    elif escolha_agendamento == "3" :
     agendamento.cancelar_agendamento()  
+    
 
 
    elif opcao == "3" :
-    encerramento = input(' Sair do sistema')
     print('Até mais!')
+ 
+  break
+
+else:
+  print('erro')
+
   
-
-   else:
-    print('Erro')
-
-   break
-
