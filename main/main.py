@@ -5,7 +5,7 @@ while True :
 
   print('Menu')
   print('Escolhe a função que deseja: ')
-  print('(1) Criar usuário')
+  print('(1) usuário')
   print('(2) Agendar compromisso')
   print('(3) Sair do sistema')
 
@@ -44,13 +44,13 @@ while True :
     agendamento.cancelar_agendamento()  
 
 
-  elif opcao == "3" :
+   elif opcao == "3" :
     encerramento = input(' Sair do sistema')
     print('Até mais!')
   
 
-  else:
-   print('Erro')
+   else:
+    print('Erro')
 
    break
 
