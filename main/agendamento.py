@@ -1,11 +1,15 @@
+from datetime import datetime
+
 agendamentos =[]
 
 def criar_agendamento() :
  nome = input('nome do evento: ')
- data = input('data do evento:')
+ data_txt = input('Digite a data do evento(dd/mm/aaaa)')
+ datetime.strptime(data_txt, "%d/%m/%Y")
+
  agendamento_novo = {
          'nome': nome, 
-         'data': data 
+         'data': data_txt
  }
 
  agendamentos.append(agendamento_novo)

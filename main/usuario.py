@@ -3,10 +3,12 @@ usuarios = []
 
 def criar_usuario() :
  nome = input('Digite o nome do usuário: ')
- data_nasc  = input(' Digite a data de nascimento: ')
+ data_txt  = input(' Digite a data de nascimento:(%d/%m/%Y) ')
+ datetime.strptime(data_txt, "%d/%m/%Y")
+ 
  usuario_novo = {
      "nome": nome,
-     "data_nasc": data_nasc
+     "data_nasc": data_txt
 }
  usuarios.append(usuario_novo)
  print(f'Usuario {nome} criado com sucesso!')
