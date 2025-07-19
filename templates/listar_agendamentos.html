@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Agendamentos</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Agendamentos</h1>
+
+        {% if agendamentos %}
+            <ul>
+                {% for agendamento in agendamentos %}
+                    <li><strong>{{ agendamento.nome }}</strong><br>🗓️ Data: {{ agendamento.data }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum agendamento registrado.</p>
+        {% endif %}
+
+        <a href="/">⬅️ Voltar ao menu</a>
+    </div>
+</body>
+</html>

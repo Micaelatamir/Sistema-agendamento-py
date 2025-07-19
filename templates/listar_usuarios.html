@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Usuários</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>👥 Usuários Cadastrados</h1>
+
+        {% if usuarios %}
+            <ul>
+                {% for usuario in usuarios %}
+                    <li><strong>{{ usuario.nome }}</strong><br>📅 Nascido em: {{ usuario.data_nasc }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum usuário cadastrado.</p>
+        {% endif %}
+
+        <a href="/">⬅️ Voltar ao menu</a>
+    </div>
+</body>
+</html>
