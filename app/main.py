@@ -1,68 +1,52 @@
-import usuario
-import agendamento
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from app.usuario import usuarios, Usuario
+from app.agendamento import agendamentos, Agendamento
 
-while True : 
+# Criar o app FastAPI
+app = FastAPI()
 
-  print('Menu')
-  print('Escolhe a função que deseja: ')
-  print('(1) usuário')
-  print('(2) Agendar compromisso')
-  print('(3) Sair do sistema')
+# Montar arquivos estáticos e templates
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
-  opcao = input('Opção selecionada: ')
+# Página inicial
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
-  if opcao == "1":
-    print(' Menu usuário:')
-    print('(1) Criar usuário')
-    print('(2) Listar usuário')
-    print('(3) Buscar usuário')
-    print('(4) deletar usuário')
-    escolha_usuario = input(' Escolha uma opção')
+# Formulário de criar usuário
+@app.get("/criar_usuario", response_class=HTMLResponse)
+def exibir_formulario_usuario(request: Request):
+    return templates.TemplateResponse("criar_usuario.html", {"request": request})
 
-    if escolha_usuario == "1" :
-          usuario.criar_usuario ()
-    elif escolha_usuario == "2" :
-          usuario.lista_usuario ()
-    elif escolha_usuario == "3" :
-          usuario.buscar_usuario()
-    elif escolha_usuario == "4" :
-          usuario.deletar_usuario () 
-    else :
-          print('Opção invalida')
-      
+# Salvando usuário
+@app.post("/criar_usuario")
+def salvar_usuario(nome: str = Form(...), email: str = Form(...)):
+    novo_usuario = Usuario(nome=nome, email=email)
+    usuarios.append(novo_usuario)
+    return RedirectResponse(url="/listar_usuarios", status_code=303)
 
-  elif opcao == "2" :
-      print('Menu de agendamento')
-      print('(1) Criar agendamento')
-      print('(2) Listar agendamento')
-      print('(3) Cancelar agendamento')
-      escolha_agendamento =input('escolha uma opção: ')
-    
+# Listando usuários
+@app.get("/listar_usuarios", response_class=HTMLResponse)
+def listar_usuarios(request: Request):
+    return templates.TemplateResponse("listar_usuarios.html", {"request": request, "usuarios": usuarios})
 
+# Formulário de criar agendamento
+@app.get("/criar_agendamento", response_class=HTMLResponse)
+def exibir_formulario_agendamento(request: Request):
+    return templates.TemplateResponse("criar_agendamento.html", {"request": request})
 
-      if escolha_agendamento == "1" :
-        agendamento.criar_agendamento()
-      elif escolha_agendamento == "2" :
-        agendamento.listar_agendamento()  
-      elif escolha_agendamento == "3" :
-        agendamento.cancelar_agendamento()  
-      else:
-        print("Opção inválida no menu de agendamento!")   
- 
-  elif opcao == "3" :
-     print('Até mais!')
-     break
-  
-  else:
-    print('ERRO')
+# Salvando agendamento
+@app.post("/criar_agendamento")
+def salvar_agendamento(usuario: str = Form(...), servico: str = Form(...)):
+    novo_agendamento = Agendamento(usuario=usuario, servico=servico)
+    agendamentos.append(novo_agendamento)
+    return RedirectResponse(url="/listar_agendamentos", status_code=303)
 
-
-
-  
-
-     
- 
-
-
-
-  
+# Listando agendamentos
+@app.get("/listar_agendamentos", response_class=HTMLResponse)
+def listar_agendamentos(request: Request):
+    return templates.TemplateResponse("listar_agendamentos.html", {"request": request, "agendamentos": agendamentos})
