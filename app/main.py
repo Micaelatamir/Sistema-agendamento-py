@@ -1,9 +1,20 @@
+from fastapi import FastAPI
+from database import SessionLocal, engine, Base
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from app.usuario import usuarios, Usuario
 from app.agendamento import agendamentos, Agendamento
+
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"mensagem": "Conexão com PostgreSQL funcionando!"}
 
 # Criar o app FastAPI
 app = FastAPI()
