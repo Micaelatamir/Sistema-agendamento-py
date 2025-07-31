@@ -1,46 +1,46 @@
-from fastapi import APIRouter, Form, Request
+from fastapi import APIRouter, Form, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from datetime import datetime
+from sqlalchemy.orm import Session
+from crud import criar_agendamento, listar_agendamentos
+from schemas import AgendamentoCreate
+from database import get_db
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
-agendamentos = []
-
+# Rota: Formulário de agendamento
 @router.get("/criar_agendamento", response_class=HTMLResponse)
 def form_criar_agendamento(request: Request):
     return templates.TemplateResponse("criar_agendamento.html", {"request": request})
 
+# Rota POST: Salvar agendamento no PostgreSQL
 @router.post("/criar_agendamento")
-def criar_agendamento(nome: str = Form(...), data_txt: str = Form(...)):
+def salvar_agendamento(
+    request: Request,
+    titulo: str = Form(...),
+    data_hora: str = Form(...),  # Formato esperado: "YYYY-MM-DDTHH:MM" (datetime-local)
+    usuario_id: int = Form(...),
+    db: Session = Depends(get_db)
+):
     try:
-        data = datetime.strptime(data_txt, "%d/%m/%Y")
-    except ValueError:
-        return RedirectResponse(url="/criar_agendamento", status_code=303)
+        # Converter a string para datetime
+        data_hora_obj = datetime.strptime(data_hora, "%Y-%m-%dT%H:%M")
+        agendamento = AgendamentoCreate(titulo=titulo, data_hora=data_hora_obj)
+        criar_agendamento(db, agendamento, usuario_id)
+        return RedirectResponse(url="/listar_agendamentos", status_code=303)
+    except ValueError as e:
+        return templates.TemplateResponse("criar_agendamento.html", {
+            "request": request,
+            "erro": f"Formato de data inválido: {e}"
+        })
 
-    agendamento_novo = {
-        "nome": nome,
-        "data": data_txt
-    }
-    agendamentos.append(agendamento_novo)
-    return RedirectResponse(url="/listar_agendamentos", status_code=303)
-
+# Rota: Listar agendamentos
 @router.get("/listar_agendamentos", response_class=HTMLResponse)
-def listar_agendamentos(request: Request):
+def mostrar_agendamentos(request: Request, db: Session = Depends(get_db)):
+    agendamentos = listar_agendamentos(db, usuario_id=1)  # Substitua 1 pelo ID do usuário logado
     return templates.TemplateResponse("listar_agendamentos.html", {
         "request": request,
         "agendamentos": agendamentos
     })
-
-@router.get("/cancelar_agendamento", response_class=HTMLResponse)
-def form_cancelar_agendamento(request: Request):
-    return templates.TemplateResponse("cancelar_agendamento.html", {"request": request})
-
-@router.post("/cancelar_agendamento")
-def cancelar_agendamento(nome: str = Form(...)):
-    for agendamento in agendamentos:
-        if agendamento["nome"] == nome:
-            agendamentos.remove(agendamento)
-            break
-    return RedirectResponse(url="/listar_agendamentos", status_code=303)

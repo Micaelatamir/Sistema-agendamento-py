@@ -9,17 +9,22 @@
     <div class="container">
         <h1>👤 Criar Novo Usuário</h1>
 
-        <form method="POST">
+        <!-- Adicione o campo de senha que estava faltando -->
+        <form method="POST" action="/usuarios">  <!-- Alterado para a rota correta do FastAPI -->
             <label for="nome">Nome:</label>
             <input type="text" name="nome" id="nome" required>
 
-            <label for="data_nasc">Data de nascimento (dd/mm/aaaa):</label>
-            <input type="text" name="data_nasc" id="data_nasc" required>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required>
+
+            <label for="senha">Senha:</label>  <!-- Campo adicionado -->
+            <input type="password" name="senha" id="senha" required>
 
             <button type="submit">Salvar</button>
         </form>
 
-        <a href="index.html">⬅️ Voltar ao menu</a>
+        <!-- Corrigido o link de volta -->
+        <a href="/">⬅️ Voltar ao menu</a>  <!-- Alterado para rota raiz -->
     </div>
 </body>
 </html>

@@ -6,12 +6,13 @@ class AgendamentoCreate(BaseModel):
     data_hora: datetime
 
 
+
 class UserBase(BaseModel):
-    name: str
+    nome: str  
     email: EmailStr
 
 class UserCreate(UserBase):
-    password: str
+    senha: str 
 
 class UserOut(UserBase):
     id: int
