@@ -1,21 +1,28 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from datetime import datetime
 
-class AgendamentoCreate(BaseModel):
+class UserBase(BaseModel):
+    email: str
+
+class UserCreate(UserBase):
+    senha: str
+
+class User(UserBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+class AgendamentoBase(BaseModel):
     titulo: str
     data_hora: datetime
 
+class AgendamentoCreate(AgendamentoBase):
+    pass
 
-
-class UserBase(BaseModel):
-    nome: str  
-    email: EmailStr
-
-class UserCreate(UserBase):
-    senha: str 
-
-class UserOut(UserBase):
+class Agendamento(AgendamentoBase):
     id: int
+    usuario_id: int
 
     class Config:
         orm_mode = True
