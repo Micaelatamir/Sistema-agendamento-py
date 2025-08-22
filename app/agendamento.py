@@ -1,46 +1,83 @@
-from fastapi import APIRouter, Form, Request, Depends
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Form, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
-from datetime import datetime
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from crud import criar_agendamento, listar_agendamentos
-from schemas import AgendamentoCreate
-from database import get_db
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.templating import Jinja2Templates
+from app.database import engine, Base, get_db
+from app import schemas, crud
+from app.models import Usuario
+from passlib.context import CryptContext
+import os
 
-router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+app = FastAPI()
 
-# Rota GET: Exibe o formulário de agendamento
-@router.get("/criar_agendamento", response_class=HTMLResponse)
-def form_criar_agendamento(request: Request):
-    return templates.TemplateResponse("criar_agendamento.html", {"request": request})
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Rota POST: Salva agendamento no banco MySQL
-@router.post("/criar_agendamento")
-def salvar_agendamento(
-    request: Request,
-    titulo: str = Form(...),
-    data_hora: str = Form(...),  # Formato esperado: "YYYY-MM-DDTHH:MM"
-    usuario_id: int = Form(...),
-    db: Session = Depends(get_db)
-):
-    try:
-        # Converte a data para objeto datetime
-        data_hora_obj = datetime.strptime(data_hora, "%Y-%m-%dT%H:%M")
-        agendamento = AgendamentoCreate(titulo=titulo, data_hora=data_hora_obj)
-        criar_agendamento(db, agendamento, usuario_id)
-        return RedirectResponse(url="/listar_agendamentos", status_code=303)
-    except ValueError as e:
-        return templates.TemplateResponse("criar_agendamento.html", {
-            "request": request,
-            "erro": f"Formato de data inválido: {e}"
-        })
+# Banco
+Base.metadata.create_all(bind=engine)
 
-# Rota GET: Lista os agendamentos
-@router.get("/listar_agendamentos", response_class=HTMLResponse)
-def mostrar_agendamentos(request: Request, db: Session = Depends(get_db)):
-    agendamentos = listar_agendamentos(db, usuario_id=1)  # Substituir 1 pelo ID real do usuário logado
-    return templates.TemplateResponse("listar_agendamentos.html", {
-        "request": request,
-        "agendamentos": agendamentos
-    })
+# Hasher
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Templates e static
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+
+# Página inicial
+@app.get("/", response_class=HTMLResponse)
+def index(request: Request):
+    usuario_id = request.cookies.get("usuario_id")
+    return templates.TemplateResponse("index.html", {"request": request, "usuario_id": usuario_id})
+
+# Cadastro
+@app.get("/cadastro", response_class=HTMLResponse)
+def form_cadastro(request: Request):
+    return templates.TemplateResponse("cadastro.html", {"request": request})
+
+@app.post("/usuarios")
+def criar_usuario(email: str = Form(...), senha: str = Form(...), db: Session = Depends(get_db)):
+    usuario = schemas.UserCreate(email=email, senha=senha)
+    db_usuario = crud.buscar_usuario_por_email(db, usuario.email)
+    if db_usuario:
+        raise HTTPException(status_code=400, detail="Email já cadastrado")
+    crud.criar_usuario(db, usuario)
+    return RedirectResponse(url="/login", status_code=303)
+
+# Login
+@app.get("/login", response_class=HTMLResponse)
+def form_login(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.post("/login")
+def login(response: Response, email: str = Form(...), senha: str = Form(...), db: Session = Depends(get_db)):
+    usuario = crud.buscar_usuario_por_email(db, email)
+    if not usuario or not pwd_context.verify(senha, usuario.senha):
+        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+
+    # Salva o ID do usuário como cookie
+    response = RedirectResponse(url="/", status_code=303)
+    response.set_cookie(key="usuario_id", value=str(usuario.id))
+    return response
+
+# Logout
+@app.get("/logout")
+def logout():
+    response = RedirectResponse(url="/")
+    response.delete_cookie("usuario_id")
+    return response
+
+# Routers
+from usuario import router as usuario_router
+from agendamento import router as agendamento_router
+
+app.include_router(usuario_router)
+app.include_router(agendamento_router)
